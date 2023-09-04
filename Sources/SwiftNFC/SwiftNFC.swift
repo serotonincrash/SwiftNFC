@@ -6,8 +6,8 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     
     public var startAlert = "Hold your iPhone near the tag."
     public var endAlert = ""
-    public var msg = "Scan to read or Edit here to write..."
-    public var raw = "Raw Data available after scan."
+    @Published public var msg = "Scan to read or Edit here to write..."
+    @Published public var raw = "Raw Data available after scan."
 
     public var session: NFCNDEFReaderSession?
     
