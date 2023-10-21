@@ -8,7 +8,8 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var endAlert = ""
     @Published public var msg = "Scan to read or Edit here to write..."
     @Published public var raw = "Raw Data available after scan."
-
+    public var completionHandler: (() -> Void)?
+    
     public var session: NFCNDEFReaderSession?
     
     public func read() {
@@ -37,6 +38,8 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
 
 
             session.alertMessage = self.endAlert != "" ? self.endAlert : "Read \(messages.count) NDEF Messages, and \(messages[0].records.count) Records."
+            
+            self.completionHandler?()
         }
     }
     
@@ -55,6 +58,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var endAlert = ""
     public var msg = ""
     public var type = "T"
+    public var completionHandler: (() -> Void)?
     
     public var session: NFCNDEFReaderSession?
     
@@ -123,6 +127,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                             session.alertMessage = self.endAlert != "" ? self.endAlert : "Write \(self.msg) to tag successful."
                         }
                         session.invalidate()
+                        self.completionHandler?()
                     })
                 @unknown default:
                     session.alertMessage = "Unknown tag status."
