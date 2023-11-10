@@ -58,7 +58,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var endAlert = ""
     public var msg = ""
     public var type = "T"
-    public var completionHandler: (() -> Void)?
+    public var completionHandler: ((Error?) -> Void)?
     
     public var session: NFCNDEFReaderSession?
     
@@ -127,7 +127,7 @@ public class NFCWriter: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                             session.alertMessage = self.endAlert != "" ? self.endAlert : "Write \(self.msg) to tag successful."
                         }
                         session.invalidate()
-                        self.completionHandler?()
+                        self.completionHandler?(error)
                     })
                 @unknown default:
                     session.alertMessage = "Unknown tag status."
