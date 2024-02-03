@@ -15,13 +15,13 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     public var endAlert = ""
     @Published public var msg = "Scan to read or Edit here to write..."
     @Published public var raw = "Raw Data available after scan."
-    public var completionHandler: (() -> Void)?
-    
+    public var completionHandler: ((Error?) -> Void)?
     public var session: NFCNDEFReaderSession?
     
     public func read() {
         guard NFCNDEFReaderSession.readingAvailable else {
-            print("Error")
+            let error = NFCIOError(type: .deviceNotSupported, "This device doesn't support NFC!")
+            completionHandler?(error)
             return
         }
         session = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
@@ -43,10 +43,10 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
                 }.joined(separator: "\n")
             }.joined(separator: " ")
 
-
             session.alertMessage = self.endAlert != "" ? self.endAlert : "Read \(messages.count) NDEF Messages, and \(messages[0].records.count) Records."
             
-            self.completionHandler?()
+            self.completionHandler?(nil)
+            
         }
     }
     
@@ -54,7 +54,7 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     }
     
     public func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
-        print("Session did invalidate with error: \(error)")
         self.session = nil
+        self.completionHandler?(error)
     }
 }
