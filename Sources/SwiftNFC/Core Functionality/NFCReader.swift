@@ -47,6 +47,8 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
             
             self.completionHandler?(nil)
             
+            self.session?.invalidate()
+            
         }
     }
     
@@ -54,7 +56,8 @@ public class NFCReader: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate
     }
     
     public func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
-        self.session = nil
+        
         self.completionHandler?(error)
+        self.session = nil
     }
 }

@@ -23,6 +23,7 @@ public class NFCIOError: Error, CustomStringConvertible {
     public var description: String {
         return "NFC I/O error [\(errorType.rawValue)]: \(message)"
     }
+    
     var errorType: NFCErrorType
     var message: String
     init(type: NFCErrorType, _ message: String = "") {
